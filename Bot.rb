@@ -33,8 +33,12 @@ class Bot
         @@browser.text_field(:name => "password").set "#{password}"
         @@browser.button(:class => ["sqdOP", "L3NKy", "y3zKF"] ).click
 
+        sleep(5)
+        if @@browser.button(:class => ['sqdOP', 'yWX7d', "y3zKF" ] ).exists?
+            @@browser.button(:class => ["sqdOP", "L3NKy", "y3zKF"] ).click
+        end
+
         sleep(10)
-        
         if @@browser.button(:class => ['aOOlW', 'HoLwm'] ).exists?
             @@browser.button(:class => ['aOOlW', 'HoLwm'] ).click
         end
@@ -43,6 +47,75 @@ class Bot
     def visitUser( username )
         @@browser.goto @@baseUrl + username # + '/?hl=id'
         # ap  @@browser.manage.logs.get(:browser)
+    end
+
+        
+    def removeStopWords( text )
+        stopWords = [
+            'or',
+            'and',
+            'on',
+            'one',
+            'possible',
+        ]
+        text = text.split(' ')
+        text = text.reject { |word| stopWords.include?(word) }.join(' ') 
+        return text
+    end
+
+    def categorizePeople( text )
+        # text = "555 people person"
+        # puts text.index(/\d+ people/)
+        if ! text.match(/\d+ people/)
+            return text
+        end
+        a = text.index(/\d+ people/)
+        result =  text[a..text.index(/\d people/)  ].to_i
+        # puts result
+
+        if result > 2
+            text = text.gsub(/\d+ people/,"xxx")
+            text = text.gsub(/person/,"")
+            text = text.gsub(/ people/,"")
+            text = text.gsub(/xxx/,"people")
+            # puts text
+        elsif result == 2
+            text = text.gsub(/\d+ people/,"couple")
+            text = text.gsub(/person/,"")
+            text = text.gsub(/ people/,"")
+            # puts text
+        end
+
+        return text
+
+    end
+
+    def textPreprocessing( text )
+        ap text
+
+        text = text.downcase
+        if text.include? "image may contain:"
+            text = text[(text.index('image may contain:') - 1)..text.length ] 
+            text.slice! "image may contain:"
+            
+        else
+            return ''
+        end
+    
+        if text.index('text that says') != nil
+            text = text[0..(text.index('that says') - 1)] 
+        end
+        text = text.gsub(/[,]/ ,"")
+        # text = text.gsub( 'people' , 'person')
+        text = text.gsub( 'more' , '3')
+        text = text.strip
+        text = removeStopWords( text )
+        text = categorizePeople( text )
+        text = text.gsub(/\d+/ ,"")
+        text = text.strip
+        ap "after : #{text}"
+        return text
+
     end
 
     def scanUserImage( username )
@@ -65,7 +138,7 @@ class Bot
                         imageDiv =  dialogElement.div(:class => "KL4Bh")
                         ap imageDiv.image.attribute('alt')
                         images.push( {
-                            'desc_image' => imageDiv.image.attribute('alt') ,
+                            'desc_image' => textPreprocessing( imageDiv.image.attribute('alt') ) ,
                             'source' => imageDiv.image.attribute('src') 
                         })
                     end
