@@ -4,21 +4,24 @@ require 'fileutils'
 require 'pg'
 require 'awesome_print' # Console output
 
-
+require 'optparse'
+require 'ostruct'
 require 'pg'
 
 class AccountScannerBot < Bot
     @@conn 
     def initialize( params = {} )
         super
-        @@conn = PG.connect :dbname => 'instanalitic', :user => 'madukubah', :password => 'Alan!234'
+        dbname = params.fetch( :dbname,'instanalitic' )
+        ap "use dbname %s" % [dbname]
+        @@conn = PG.connect :dbname => dbname , :user => 'madukubah', :password => 'Alan!234'
     end
 
     def do_scanning( params = {} )
         rs  = @@conn.exec('SELECT * from temp_targets where ( select count(username) from posts where posts.username = temp_targets.username ) = 0 ')
         rs.each do |row|
             ap row
-            results = self.scanUserImage( row['username'] )
+            results = self.scanUserImage( row['username'], 25 )
             ap results
             query = "INSERT INTO posts (id, username, desc_image, source_image, created_at, updated_at, full_name, profile_pic_url, user_id ) VALUES "
             results.each do |image|
@@ -29,17 +32,24 @@ class AccountScannerBot < Bot
             if results.length > 0
                 query = query[0 .. query.length-2]
                 @@conn.exec( query )
+            else
+                ap "USER DOES NOT HAVE ANY DATA"
             end
-
+            
         end
     end
-
-
-
-
 end
 
-salesBot = AccountScannerBot.new( )
+# START ================================
+
+options = OpenStruct.new
+OptionParser.new do |opt|
+  opt.on( '--db DATABASE', 'The Database Used') { |o| options.db = o }
+end.parse!
+
+salesBot = AccountScannerBot.new( 
+    :dbname => options.db
+)
 salesBot.login( 'alan_12213', 'Alan!234' )
 salesBot.do_scanning( )
 

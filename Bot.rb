@@ -118,7 +118,14 @@ class Bot
 
     end
 
-    def scanUserImage( username )
+    def followUser( username )
+        if @@browser.button(:class => [ "_5f5mN", "jIbKX", "_6VtSN", "yZn4P" ]).exists?
+            @@browser.button( :class => [ "_5f5mN", "jIbKX", "_6VtSN", "yZn4P" ] ).click
+            sleep(3)
+        end
+    end
+
+    def scanUserImage( username, limit = NULL )
         begin
             self.visitUser( username )
             images = Array.new #local var
@@ -128,8 +135,10 @@ class Bot
                 dialogElement = $wait.until { @@browser.div(:class => ["_2dDPU", "CkGkG"]) }
                 imageCount = 0
                 while dialogElement.link( :class => ["_65Bje", "coreSpriteRightPaginationArrow"] ).exists?
-                    if(  imageCount > 30 )
-                        break
+                    if( limit )
+                        if(  imageCount > limit )
+                            break
+                        end
                     end
 
                     $wait.until { !dialogElement.div(:class => ['jdnLC' ] ).present? }
@@ -150,7 +159,7 @@ class Bot
         rescue
             ap "get rate limit sleep 400 seconds"
             sleep(400)
-            self.scanUserImage( username )
+            self.scanUserImage( username, limit )
         end
     end
 

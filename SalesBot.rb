@@ -2,16 +2,20 @@ require 'json'
 require_relative 'Bot' 
 require 'fileutils'
 require 'pg'
+require 'awesome_print' # Console output
 
-require 'pg'
+require 'optparse'
+require 'ostruct'
 
 class SalesBot < Bot
-    @@conn 
+    @@conn
     @@class 
     @@message 
     def initialize( params = {} )
         super
-        @@conn = PG.connect :dbname => 'instanalitic', :user => 'madukubah', :password => 'Alan!234'
+        dbname = params.fetch( :dbname,'instanalitic' )
+        ap "use dbname %s" % [dbname]
+        @@conn = PG.connect :dbname => dbname , :user => 'madukubah', :password => 'Alan!234'
         rs  = @@conn.exec('SELECT * from bots limit 1')
         rs.each do |row|
             @@class = row['class_code']
@@ -21,8 +25,9 @@ class SalesBot < Bot
 
     def do_message( username )
         self.visitUser( username )
-        if @@browser.button(:class => ['fAR91', 'sqdOP', 'L3NKy', '_4pI4F', '_8A5w5'] ).exists?
-            @@browser.button(:class => ['fAR91', 'sqdOP', 'L3NKy', '_4pI4F', '_8A5w5'] ).click
+        self.followUser( username )
+        if @@browser.button(:class => [ 'sqdOP', 'L3NKy', '_4pI4F', '_8A5w5'] ).exists?
+            @@browser.button(:class => [ 'sqdOP', 'L3NKy', '_4pI4F', '_8A5w5'] ).click
             sleep(4)
 
             if @@browser.div(:class => ['Igw0E', 'IwRSH', 'eGOV_', 'vwCYk', 'ItkAi'] ).exists?
@@ -50,14 +55,24 @@ class SalesBot < Bot
         rs  = @@conn.exec('SELECT * from account_analysis where code=%s' % [ @@class ] )
         rs.each do |row|
             puts "%s " % [ row['username'] ]
-            do_message( "viradianfauziah" )
+            do_message( "axis_id" )
+            # do_message( row['username'] )
             # ask_for_dm( "viradianfauziah" )
         end
     end
 
 end
 
-salesBot = SalesBot.new( )
+# START ================================
+
+options = OpenStruct.new
+OptionParser.new do |opt|
+  opt.on( '--db DATABASE', 'The Database Used') { |o| options.db = o }
+end.parse!
+
+salesBot = SalesBot.new(
+    :dbname => options.db
+ )
 salesBot.login( 'alan_12213', 'Alan!234' )
 salesBot.do_advertising( )
 
