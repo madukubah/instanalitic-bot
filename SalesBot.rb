@@ -55,9 +55,9 @@ class SalesBot < Bot
         rs  = @@conn.exec('SELECT * from account_analysis where code=%s' % [ @@class ] )
         rs.each do |row|
             puts "%s " % [ row['username'] ]
-            do_message( "axis_id" )
-            # do_message( row['username'] )
-            # ask_for_dm( "viradianfauziah" )
+            # do_message( "mildafatriani" )
+            do_message( row['username'] )
+            # ask_for_dm( "mildafatriani" )
         end
     end
 

@@ -106,6 +106,7 @@ class Bot
             text = text[0..(text.index('that says') - 1)] 
         end
         text = text.gsub(/[,]/ ,"")
+        text = text.gsub(/[.]/ ,"")
         # text = text.gsub( 'people' , 'person')
         text = text.gsub( 'more' , '3')
         text = text.strip
@@ -115,7 +116,6 @@ class Bot
         text = text.strip
         ap "after : #{text}"
         return text
-
     end
 
     def followUser( username )

@@ -22,6 +22,7 @@ class AccountScannerBot < Bot
         rs.each do |row|
             ap row
             results = self.scanUserImage( row['username'], 25 )
+            # results = self.scanUserImage( "mildafatriani", 25 )
             ap results
             query = "INSERT INTO posts (id, username, desc_image, source_image, created_at, updated_at, full_name, profile_pic_url, user_id ) VALUES "
             results.each do |image|
@@ -47,10 +48,11 @@ OptionParser.new do |opt|
   opt.on( '--db DATABASE', 'The Database Used') { |o| options.db = o }
 end.parse!
 
-salesBot = AccountScannerBot.new( 
+accountScannerBot = AccountScannerBot.new( 
     :dbname => options.db
 )
-salesBot.login( 'alan_12213', 'Alan!234' )
-salesBot.do_scanning( )
+# accountScannerBot.login( 'semdoank@ymail.com', 'safril16031' )
+accountScannerBot.login( 'alan_12213', 'Alan!234' )
+accountScannerBot.do_scanning( )
 
 sleep(500)
