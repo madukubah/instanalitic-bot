@@ -43,8 +43,8 @@ end
 
 
 bot = Bot.new
-bot.login( 'muhammadalfalahmadukubah', 'alanalin' )
-# bot.login( 'alan_12213', 'Alan!234' )
+bot.login( 'username', 'pass' )
+# bot.login( 'username', 'pass' )
 # bot.scanUserImage( 'fenih13' )
 
 lastAct = JSON.parse( File.read("scanned_users_media/last_action.json") ) 
@@ -72,7 +72,7 @@ for i in $fileIndex..files.length
             if( $userData.length == $userDatasPerFile )
                 saveData( $userData )
                 $userData = Array.new
-                # bot.login( 'muhammadalfalahmadukubah', 'alanalin' )
+                # bot.login( 'username', 'pass' )
             end
         rescue
             ap "failed... skip"

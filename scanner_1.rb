@@ -7,5 +7,5 @@ userScannerBot = UserScannerBot.new(
     :startIndexFile => 10 ,
     :endIndexFile => 19 ,
     )
-userScannerBot.login( 'alan_12213', 'Alan!234' )
+userScannerBot.login( 'username', 'pass' )
 userScannerBot.scanUsersImage()

@@ -99,7 +99,7 @@ class UserScannerBot < Bot
                     if( @@userData.length == @@userDatasPerFile )
                         self.saveData( @@userData )
                         @@userData = Array.new
-                        # bot.login( 'muhammadalfalahmadukubah', 'alanalin' )
+                        # bot.login( 'username', 'pass' )
                     end
                 rescue
                     ap "failed... skip"

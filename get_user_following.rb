@@ -1,7 +1,7 @@
 require_relative 'Bot' 
 
 bot = Bot.new
-bot.login( 'alan_12213', 'Alan!234' )
+bot.login( 'username', 'pass' )
 
 bot.setUserStorePath( 'data/users5' )
 

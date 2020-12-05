@@ -73,7 +73,7 @@ end.parse!
 salesBot = SalesBot.new(
     :dbname => options.db
  )
-salesBot.login( 'alan_12213', 'Alan!234' )
+salesBot.login( 'username', 'pass' )
 salesBot.do_advertising( )
 
 sleep(500)
